@@ -1,0 +1,60 @@
+.courseTable {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 800px;
+    margin-bottom: 25px;
+  }
+
+  .tableWrapper {
+    overflow-x: auto;
+    max-width: 100%;
+    margin-top: 20px;
+  }
+  
+  .courseTable th,
+  .courseTable td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: center;
+    font-size: 14px;
+  }
+  
+  .courseTable th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+  }
+  
+  .courseTable tr:nth-child(even) {
+    background-color: #f8f8f8;
+  }
+  
+  .courseTable tr:hover {
+    background-color: #e6e6e6;
+  }
+  
+  .weekCell {
+    cursor: pointer;
+  }
+
+.courseCode,
+.courseName,
+.sp,
+.teacher {
+  text-align: left;
+}
+
+.courseCode {
+  width: 250px;
+}
+
+.courseName {
+  width: 300px;
+}
+
+.sp {
+  width: 50px;
+}
+
+.teacher {
+  width: 200px;
+}

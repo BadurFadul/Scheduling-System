@@ -1,0 +1,63 @@
+
+.container{
+    background-color: rgb(242, 242, 242);
+    display: flex;
+    height: 100vh;
+}
+
+.img{
+    flex-basis:40%;
+    background-image: url('../assets/logo2.jpg');
+    background-size: cover;
+    background-position: center;
+}
+.formpad{
+    font-size: 1.3em;
+}
+
+.content{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex-basis: 60%;
+    gap: 50px;
+}
+.Header{
+    display: flex;
+    justify-content: center;
+}
+.formdiv{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 90%;
+}
+form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    margin-right: 100px;
+    margin-left: 100px;
+    gap: 40px;
+    background-color: white;
+    border-radius: 30px;    
+}
+.input{
+    border: 1px solid black;
+    border-radius: 30px;
+    width: 130%;
+    text-align: center;
+}
+
+.formdiv{
+    
+}
+.btn{
+    background-color: red;
+    border: 1px solid red;
+    font-weight: bold;
+    border-radius: 30px;
+    width: 40%;
+}

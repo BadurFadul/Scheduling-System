@@ -1,4 +1,4 @@
-const Session = require('../models/sessions')
+//const Session = require('../models/sessions')
 const jwt = require('jsonwebtoken')
 const { SECRET } = require('./config')
 

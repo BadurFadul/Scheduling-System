@@ -1,6 +1,6 @@
 const router = require('express').Router()
-const { where } = require('sequelize')
 const { Courses, Groups,Exams, Users } = require('../models')
+const {tokenExtractor} = require('../util/middleware')
 
 
 // Get all courses
