@@ -5,10 +5,30 @@ body{
 .container{
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content:space-between;
+    align-content: center;
     align-items: center;
+    margin: 0;
     height: 120px;
     padding: 20px;
     background-color: white;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 4px 4px;
+}
+
+.login{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.login button{
+    background-color: #1e293b;
+    color:white;
+    padding:5px;
+    border-radius: 20px;
+    width: 90px;
+}
+
+.logo{
+    font-size: 4rem;
 }

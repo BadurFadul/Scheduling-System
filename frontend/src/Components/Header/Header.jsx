@@ -1,5 +1,6 @@
 import header from './Header.module.css'
 import { Link } from 'react-router-dom'
+import Home from '../Home/Home'
 
 const Header = ({user, handlelogout}) => {
   return (
@@ -7,21 +8,14 @@ const Header = ({user, handlelogout}) => {
         <div className={header.logo}>
             Logo
         </div>
-        <div className={header.info}>
-            <div className={header.links}>
-                <ul>
-                    <Link to="/teacher">Teacher</Link>
-                    <Link to="/home">Home</Link>
-                </ul>
-            </div>
-        </div>
             <div className={header.user}>
-                   {user? user.name: null}
+                   
             </div>
             <div className={header.login}>
+                <Link to="/teacher">Teacher</Link>
                 <button onClick={handlelogout}>Log out</button>
+                <p>{user? user.name: null} </p>
             </div>
-            <br/>
     </div>
     
   )

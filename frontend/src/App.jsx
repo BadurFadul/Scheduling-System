@@ -3,6 +3,7 @@ import { Login, Header, Home, Teacher } from "./Components"
 import LoginServices from "./services/LoginServices"
 import CourseServerice from "./services/CourseServerice"
 import ExamsService from "./services/ExamsService"
+import './App.css'
 import {
   BrowserRouter as Router,
   Routes, Route, useNavigate, json
@@ -70,8 +71,9 @@ function App() {
   }
 
   return (
-      
-      <Routes>
+    <div>
+      {user ? <Header user={user} handlelogout={handlelogout} /> : null}
+        <Routes>
         <Route path="/login" element= {<Login 
         username={username}
         password={password}
@@ -79,10 +81,12 @@ function App() {
         handlePasswordChange={({target}) => setPassword(target.value)}
         handleSubmit={handleLogin}
         />}/>
-        <Route path="/" element= {<Header user={user} handlelogout= {handlelogout}/>}/>
-        <Route path="/home" element= {<Home />}/>
+        <Route path="/" element= {<Home />}/>
         <Route path="/teacher" element= {<Teacher user={user}/>}/>
       </Routes>
+    </div>
+      
+      
   )
 }
 

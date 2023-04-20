@@ -17,15 +17,32 @@ const Home = () => {
   //Getting exams
   useEffect(() => {
     ExamsService.getAll().then(exams => setExams(exams))
-  })
+  },[])
 
   // Get unique group names
   const groupNames = Array.from(
     new Set(courses.map((course) => course.group.name))
   );
 
+  const getWeekNumber = (date) => {
+    const d = new Date(date);
+    d.setHours(0, 0, 0, 0);
+    d.setDate(d.getDate() + 3 - (d.getDay() + 6) % 7);
+    const week1 = new Date(d.getFullYear(), 0, 4);
+    return 1 + Math.round(((d - week1) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
+  };
+
+  const formatDate = (date) => {
+    const d = new Date(date);
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const dayName = days[d.getDay()];
+    const formattedDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    return `${dayName}, ${formattedDate}`;
+  };
+
+
   return (
-    <div >
+    <div className={css.wrapper}>
         <Link to="/">back</Link>
     <br/>
       {groupNames.map((group) => (
@@ -52,14 +69,19 @@ const Home = () => {
                     <td className={css.courseName}>{course.name}</td>
                     <td className={css.sp}>{course.sp}</td>
                     <td className={css.teacher}>{course.teacher}</td>
-                    {Array.from({ length: 17 }, (_, i) => (
-                      <td
-                        key={i}
-                        className={css.weekCell}
-                      >
-                        {/* Display exam data for the course in the corresponding week cell */}
-                      </td>
-                    ))}
+                    {Array.from({ length: 17 }, (_, i) => {
+              const exam = exams.find(
+                (exam) => exam.courseCode === course.code && getWeekNumber(exam.date) === i + 1
+              );
+              return (
+                <td
+                  key={i}
+                  className={css.weekCell}
+                >
+                  {exam ? formatDate(exam.date) : ''}
+                </td>
+              );
+            })}
                   </tr>
                 ))}
             </tbody>

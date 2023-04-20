@@ -1,4 +1,4 @@
-const { Model, DataTypes } = require('sequelize')
+const { Model, DataTypes, Op } = require('sequelize')
 const { sequelize } = require('../util/db')
 
 class Exams extends Model {}
@@ -18,7 +18,7 @@ Exams.init({
     underscored:true,
     timestamps: true,
     modelName: 'exams',
-    hooks: {
+    /*hooks: {
         async beforeCreate(exam) {
           // Find all exams for the same course that occur during the same week as the new exam
           const exams = await Exams.findAll({
@@ -47,7 +47,7 @@ Exams.init({
             throw new Error('Group has already an exam on the same day')
           }
         },
-      },
+      },*/
 })
 
 module.exports = Exams
