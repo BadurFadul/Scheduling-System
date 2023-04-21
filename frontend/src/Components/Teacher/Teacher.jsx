@@ -3,7 +3,7 @@ import css from './Teacher.module.css'
 import CourseServerice from '../../services/CourseServerice'
 import ExamsService from '../../services/ExamsService'
 import { Link } from 'react-router-dom'
-import DatePicker from 'react-datepicker'
+
 
 
 const Teacher = ({user}) => {
@@ -13,6 +13,8 @@ const Teacher = ({user}) => {
     const [showSelectedWeekDates, setShowSelectedWeekDates] = useState(false);
     const [selectedDate, setSelectedDate] = useState('');
     const [selectedCourseCode, setSelectedCourseCode] = useState('');
+    const [selectedExamId, setSelectedExamId] = useState('');
+    const [formMode, setFormMode] = useState(null);
 
     //Getting courses
   useEffect(() => {
@@ -66,21 +68,45 @@ const getWeekDates = (weekNumber) => {
   return dates;
 };
 
+//create exam
 const handleExam = async (event) => {
-  event.preventDefault()
-  console.log("Selected date:", selectedDate);
-  console.log("Selected course code:", selectedCourseCode);
+  event.preventDefault();
   const Obj = {
     date: selectedDate,
     courseId: selectedCourseCode
   };
+
   try {
-    await ExamsService.create(Obj);
+    if (formMode === 'add') {
+      await ExamsService.create(Obj);
+    } else if (formMode === 'update') {
+      await ExamsService.update(selectedExamId, Obj);
+    }
+    // Refresh exams data after creating or updating
+    ExamsService.getAll().then((exams) => setExams(exams));
+    setShowSelectedWeekDates(false);
+    setFormMode(null);
   } catch (error) {
-    console.error("Error creating exam", error);
+    console.error("Error handling exam", error);
     return false;
   }
 };
+
+//delete exam
+const deleteExam = async () => {
+  try {
+    await ExamsService.deleteId(selectedExamId);
+    // Refresh exams data after deleting
+    ExamsService.getAll().then((exams) => setExams(exams));
+    setSelectedExamId('');
+    setShowSelectedWeekDates(false);
+    setFormMode(null);
+  } catch (error) {
+    console.error("Error deleting exam", error);
+    return false;
+  }
+};
+
 
   return (
     <div className={css.wrapper}>
@@ -121,8 +147,16 @@ const handleExam = async (event) => {
                     key={i}
                     onClick={() => {
                       setSelectedWeekDates(getWeekDates(i + 1));
-                      setSelectedCourseCode(course.code)
-                      setShowSelectedWeekDates(true);
+                      setSelectedCourseCode(course.code);
+                      if (exam) {
+                        setSelectedExamId(exam.id);
+                        setSelectedDate(exam.date);
+                        setFormMode('update');
+                      } else {
+                        setSelectedExamId('');
+                        setSelectedDate('');
+                        setFormMode('add');
+                      }
                     }}
                     className={css.weekCell}
                   >
@@ -134,26 +168,38 @@ const handleExam = async (event) => {
               ))}
           </tbody>
         </table>
-        {showSelectedWeekDates && selectedWeekDates.length > 0 && (
-          <form  onSubmit={handleExam}>
-            <h2>Selected Week Dates:</h2>
-            <div>
-                <select
-                value={selectedDate}
-                onChange={(e) => setSelectedDate(e.target.value)}
-              >
-                <option value="" disabled>Select a date</option>
-                {selectedWeekDates.map((date, index) => (
-                  <option key={index} value={date}>
-                    {date}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <button type='submit'>Add Exam</button>
-            <button onClick={() => setShowSelectedWeekDates(false)}>Cancel</button>
-          </form>
+        {formMode && (
+  <form onSubmit={handleExam} className={css.formWrapper}>
+    <h2>Selected Week Dates:</h2>
+    <div>
+      <select
+        value={selectedDate}
+        onChange={(e) => setSelectedDate(e.target.value)}
+      >
+        <option value="" disabled>
+          Select a date
+        </option>
+        {selectedWeekDates.map((date, index) => (
+          <option key={index} value={date}>
+            {date}
+          </option>
+        ))}
+      </select>
+    </div>
+    <div className={css.buttonContainer}>
+      {formMode === 'add' && <button type="submit">Add Exam</button>}
+      {formMode === 'update' && (
+        <>
+          <button type="submit">Update Exam</button>
+          <button onClick={deleteExam} type="button" className={css.delete}>
+            Delete Exam
+          </button>
+        </>
       )}
+      <button onClick={() => {setShowSelectedWeekDates(false); setFormMode(null);}} className={css.cancel}>Cancel</button>
+    </div>
+  </form>
+)}
       </div>
     ))}
   </div>
