@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react'
 import css from './Teacher.module.css'
 import CourseServerice from '../../services/CourseServerice'
 import ExamsService from '../../services/ExamsService'
+import ExamModel from '../ExamModel/ExamModel';
 import { Link } from 'react-router-dom'
-
 
 
 const Teacher = ({user}) => {
@@ -15,6 +15,7 @@ const Teacher = ({user}) => {
     const [selectedCourseCode, setSelectedCourseCode] = useState('');
     const [selectedExamId, setSelectedExamId] = useState('');
     const [formMode, setFormMode] = useState(null);
+    const [showModal, setShowModal] = useState(false);
 
     //Getting courses
   useEffect(() => {
@@ -84,6 +85,7 @@ const handleExam = async (event) => {
     }
     // Refresh exams data after creating or updating
     ExamsService.getAll().then((exams) => setExams(exams));
+    setShowModal(false);
     setShowSelectedWeekDates(false);
     setFormMode(null);
   } catch (error) {
@@ -99,6 +101,7 @@ const deleteExam = async () => {
     // Refresh exams data after deleting
     ExamsService.getAll().then((exams) => setExams(exams));
     setSelectedExamId('');
+    setShowModal(false);
     setShowSelectedWeekDates(false);
     setFormMode(null);
   } catch (error) {
@@ -151,10 +154,12 @@ const deleteExam = async () => {
                       if (exam) {
                         setSelectedExamId(exam.id);
                         setSelectedDate(exam.date);
+                        setShowModal(true);
                         setFormMode('update');
                       } else {
                         setSelectedExamId('');
                         setSelectedDate('');
+                        setShowModal(true);
                         setFormMode('add');
                       }
                     }}
@@ -169,37 +174,39 @@ const deleteExam = async () => {
           </tbody>
         </table>
         {formMode && (
-  <form onSubmit={handleExam} className={css.formWrapper}>
-    <h2>Selected Week Dates:</h2>
-    <div>
-      <select
-        value={selectedDate}
-        onChange={(e) => setSelectedDate(e.target.value)}
-      >
-        <option value="" disabled>
-          Select a date
-        </option>
-        {selectedWeekDates.map((date, index) => (
-          <option key={index} value={date}>
-            {date}
-          </option>
-        ))}
-      </select>
-    </div>
-    <div className={css.buttonContainer}>
-      {formMode === 'add' && <button type="submit">Add Exam</button>}
-      {formMode === 'update' && (
-        <>
-          <button type="submit">Update Exam</button>
-          <button onClick={deleteExam} type="button" className={css.delete}>
-            Delete Exam
-          </button>
-        </>
-      )}
-      <button onClick={() => {setShowSelectedWeekDates(false); setFormMode(null);}} className={css.cancel}>Cancel</button>
-    </div>
-  </form>
-)}
+          <ExamModel show={showModal}>
+              <form onSubmit={handleExam} className={css.formWrapper}>
+                <h2>Selected Week Dates:</h2>
+                <div>
+                  <select
+                    value={selectedDate}
+                    onChange={(e) => setSelectedDate(e.target.value)}
+                  >
+                    <option value="" disabled>
+                      Select a date
+                    </option>
+                    {selectedWeekDates.map((date, index) => (
+                      <option key={index} value={date}>
+                        {date}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className={css.buttonContainer}>
+                  {formMode === 'add' && <button type="submit">Add Exam</button>}
+                  {formMode === 'update' && (
+                    <>
+                      <button type="submit">Update Exam</button>
+                      <button onClick={deleteExam} type="button" className={css.delete}>
+                        Delete Exam
+                      </button>
+                    </>
+                  )}
+                  <button onClick={() => {setShowSelectedWeekDates(false); setFormMode(null);}} className={css.cancel}>Cancel</button>
+                </div>
+            </form>
+          </ExamModel>
+        )}
       </div>
     ))}
   </div>
