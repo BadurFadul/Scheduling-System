@@ -16,6 +16,8 @@ const Teacher = ({user}) => {
     const [selectedExamId, setSelectedExamId] = useState('');
     const [formMode, setFormMode] = useState(null);
     const [showModal, setShowModal] = useState(false);
+    const [groups, setGroup] = useState([])
+    const [filter, setFilter] = useState('');
 
     //Getting courses
   useEffect(() => {
@@ -69,28 +71,71 @@ const getWeekDates = (weekNumber) => {
   return dates;
 };
 
-//create exam
+
 const handleExam = async (event) => {
   event.preventDefault();
-  const Obj = {
-    date: selectedDate,
-    courseId: selectedCourseCode
-  };
 
-  try {
-    if (formMode === 'add') {
-      await ExamsService.create(Obj);
-    } else if (formMode === 'update') {
-      await ExamsService.update(selectedExamId, Obj);
-    }
-    // Refresh exams data after creating or updating
-    ExamsService.getAll().then((exams) => setExams(exams));
-    setShowModal(false);
-    setShowSelectedWeekDates(false);
-    setFormMode(null);
-  } catch (error) {
-    console.error("Error handling exam", error);
+  // Find the group of the selected course
+  const selectedCourseGroup = filteredCourses.find((course) => course.code === selectedCourseCode).group.name;
+
+  // Extract the base group name from the selected course group name
+  const baseGroupName = selectedCourseGroup.split("-")[0];
+
+  // Check exams for the selected course's base group in the selected week
+  const examsInBaseGroupAndWeek = exams.filter((exam) =>
+    getWeekNumber(exam.date) === getWeekNumber(selectedDate) &&
+    filteredCourses.some(
+      (course) =>
+        course.group.name === baseGroupName &&
+        course.code === exam.courseCode
+    )
+  );
+
+  // Check exams for the selected course's specific group in the selected week
+  const examsInSpecificGroupAndWeek = exams.filter((exam) =>
+    getWeekNumber(exam.date) === getWeekNumber(selectedDate) &&
+    filteredCourses.some(
+      (course) =>
+        course.group.name === selectedCourseGroup &&
+        course.code === exam.courseCode
+    )
+  );
+
+  // Calculate total exams for both the base group and the side group
+  const totalExams = examsInBaseGroupAndWeek.length + examsInSpecificGroupAndWeek.length;
+
+  // Check if there's already an exam for the selected course on the selected date
+  const examOnSameDate = examsInSpecificGroupAndWeek.some(
+    (exam) => exam.date === selectedDate && exam.courseCode === selectedCourseCode
+  );
+
+  if (totalExams >= 2) {
+    alert("Each group can have a maximum of two exams per week, including the base group.");
     return false;
+  } else if (examOnSameDate) {
+    alert("There is already an exam for this course on the selected date.");
+    return false;
+  } else {
+    const Obj = {
+      date: selectedDate,
+      courseId: selectedCourseCode,
+    };
+
+    try {
+      if (formMode === "add") {
+        await ExamsService.create(Obj);
+      } else if (formMode === "update") {
+        await ExamsService.update(selectedExamId, Obj);
+      }
+      // Refresh exams data after creating or updating
+      ExamsService.getAll().then((exams) => setExams(exams));
+      setShowModal(false);
+      setShowSelectedWeekDates(false);
+      setFormMode(null);
+    } catch (error) {
+      console.error("Error handling exam", error);
+      return false;
+    }
   }
 };
 
@@ -117,6 +162,7 @@ const deleteExam = async () => {
     <h1>Courses for {user? user.name: null}</h1>
     <br/>
     <Link to="/">back</Link>
+    <br />
     {groupNames.map((group) => (
       <div key={group} className={css.tableWrapper}>
         <h2>{group}</h2>
@@ -193,7 +239,7 @@ const deleteExam = async () => {
                   </select>
                 </div>
                 <div className={css.buttonContainer}>
-                  {formMode === 'add' && <button type="submit">Add Exam</button>}
+                  {formMode === 'add' && <button type="submit">Add Exam</button> }
                   {formMode === 'update' && (
                     <>
                       <button type="submit">Update Exam</button>

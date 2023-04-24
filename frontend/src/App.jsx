@@ -13,8 +13,6 @@ function App() {
   const [username, setUsername] = useState('') 
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [Courses, setCourses] = useState([])
-  const [Exams, setExams] = useState([])
   const [ErrorMessage, setErrorMessage] = useState('')
 
   const navigate = useNavigate()

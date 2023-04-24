@@ -2,12 +2,16 @@ import { useEffect, useState } from 'react';
 import css from './Home.module.css'
 import CourseServerice from '../../services/CourseServerice';
 import ExamsService from '../../services/ExamsService';
-import { Link } from 'react-router-dom'
+import GroupService from '../../services/GroupService';
+import { Link } from 'react-router-dom';
+
 
 
 const Home = () => {
     const [courses, setCourses] = useState([]);
     const [exams, setExams] = useState([]);
+    const [groups, setGroup] = useState([])
+    const [filter, setFilter] = useState('');
 
     //Getting courses
   useEffect(() => {
@@ -19,10 +23,11 @@ const Home = () => {
     ExamsService.getAll().then(exams => setExams(exams))
   },[])
 
-  // Get unique group names
-  const groupNames = Array.from(
-    new Set(courses.map((course) => course.group.name))
-  );
+    //Getting groups and their courses
+    useEffect(() => {
+      GroupService.getAll().then((group) => setGroup(group));
+    }, []);
+
 
   const getWeekNumber = (date) => {
     const d = new Date(date);
@@ -40,14 +45,37 @@ const Home = () => {
     return `${dayName}, ${formattedDate}`;
   };
 
+  const handleFilterChange = (event) => {
+    setFilter(event.target.value);
+  };
+
+  const showAllGroups = () => {
+    setFilter('');
+  };
+
+  const filteredGroups = groups.filter((group) =>
+  group.name.toLowerCase().startsWith(filter.toLowerCase()),
+);
+
 
   return (
     <div className={css.wrapper}>
-        <Link to="/">back</Link>
-    <br/>
-      {groupNames.map((group) => (
-        <div key={group} className={css.tableWrapper}>
-          <h2>{group}</h2>
+      <Link to="/">back</Link>
+      <br />
+      <div className={css.filterWrapper}>
+        <label htmlFor="filter">Filter by group name:</label>
+        <input
+          type="text"
+          id="filter"
+          value={filter}
+          onChange={handleFilterChange}
+          placeholder="e.g., ELA21"
+        />
+        <button onClick={showAllGroups}>Show All Groups</button>
+      </div>
+      {filteredGroups.map((group) => (
+        <div key={group.groupId} className={css.tableWrapper}>
+          <h2>{group.name}</h2>
           <table className={css.courseTable}>
             <thead>
               <tr>
@@ -61,35 +89,32 @@ const Home = () => {
               </tr>
             </thead>
             <tbody>
-              {courses
-                .filter((course) => course.group.name === group)
-                .map((course) => (
-                  <tr key={course.code}>
-                    <td className={css.courseCode}>{course.code}</td>
-                    <td className={css.courseName}>{course.name}</td>
-                    <td className={css.sp}>{course.sp}</td>
-                    <td className={css.teacher}>{course.teacher}</td>
-                    {Array.from({ length: 17 }, (_, i) => {
-              const exam = exams.find(
-                (exam) => exam.courseCode === course.code && getWeekNumber(exam.date) === i + 1
-              );
-              return (
-                <td
-                  key={i}
-                  className={css.weekCell}
-                >
-                  {exam ? formatDate(exam.date) : ''}
-                </td>
-              );
-            })}
-                  </tr>
-                ))}
+              {group.courses.map((course) => (
+                <tr key={course.code}>
+                  <td className={css.courseCode}>{course.code}</td>
+                  <td className={css.courseName}>{course.name}</td>
+                  <td className={css.sp}>{course.sp}</td>
+                  <td className={css.teacher}>{course.teacher}</td>
+                  {Array.from({ length: 17 }, (_, i) => {
+                    const exam = exams.find(
+                      (exam) =>
+                        exam.courseCode === course.code &&
+                        getWeekNumber(exam.date) === i + 1,
+                    );
+                    return (
+                      <td key={i} className={css.weekCell}>
+                        {exam ? formatDate(exam.date) : ''}
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
       ))}
     </div>
-  )
-}
+  );
+};
 
 export default Home
