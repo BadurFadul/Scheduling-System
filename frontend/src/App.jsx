@@ -70,7 +70,13 @@ function App() {
 
   return (
     <div>
-      {user ? <Header user={user} handlelogout={handlelogout} /> : null}
+      {user ? <Header user={user} handlelogout={handlelogout} /> : <Login 
+        username={username}
+        password={password}
+        handleUsernameChange={({target}) => setUsername(target.value)}
+        handlePasswordChange={({target}) => setPassword(target.value)}
+        handleSubmit={handleLogin}
+        />}
         <Routes>
         <Route path="/login" element= {<Login 
         username={username}

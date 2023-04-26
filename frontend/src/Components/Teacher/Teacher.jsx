@@ -79,41 +79,43 @@ const handleExam = async (event) => {
   const selectedCourseGroup = filteredCourses.find((course) => course.code === selectedCourseCode).group.name;
 
   // Extract the base group name from the selected course group name
-  const baseGroupName = selectedCourseGroup.split("-")[0];
+  const baseGroupName = selectedCourseGroup.includes("-") ? selectedCourseGroup.split("-")[0] : selectedCourseGroup;
 
-  // Check exams for the selected course's base group in the selected week
-  const examsInBaseGroupAndWeek = exams.filter((exam) =>
-    getWeekNumber(exam.date) === getWeekNumber(selectedDate) &&
-    filteredCourses.some(
-      (course) =>
-        course.group.name === baseGroupName &&
-        course.code === exam.courseCode
-    )
-  );
+  // Get side groups associated with the base group
+  const sideGroups = filteredCourses.filter(
+    (course) => course.group.name.startsWith(baseGroupName + "-")
+  ).map((course) => course.group.name);
 
-  // Check exams for the selected course's specific group in the selected week
-  const examsInSpecificGroupAndWeek = exams.filter((exam) =>
-    getWeekNumber(exam.date) === getWeekNumber(selectedDate) &&
-    filteredCourses.some(
-      (course) =>
-        course.group.name === selectedCourseGroup &&
-        course.code === exam.courseCode
-    )
-  );
+  // Create an array containing the base group and the associated side groups
+  const groupsToCheck = selectedCourseGroup === baseGroupName ? [baseGroupName, ...sideGroups] : [baseGroupName, selectedCourseGroup];
 
-  // Calculate total exams for both the base group and the side group
-  const totalExams = examsInBaseGroupAndWeek.length + examsInSpecificGroupAndWeek.length;
+  const examWeekNumber = getWeekNumber(selectedDate);
 
-  // Check if there's already an exam for the selected course on the selected date
-  const examOnSameDate = examsInSpecificGroupAndWeek.some(
-    (exam) => exam.date === selectedDate && exam.courseCode === selectedCourseCode
-  );
+  let groupExamsThisWeek = [];
+  let hasSameDayExam = false;
 
-  if (totalExams >= 2) {
-    alert("Each group can have a maximum of two exams per week, including the base group.");
+  for (const group of groupsToCheck) {
+    const examsInGroupThisWeek = exams.filter((exam) => {
+      const examWeek = getWeekNumber(exam.date);
+      return (
+        examWeek === examWeekNumber &&
+        filteredCourses.some((course) => course.group.name === group && course.code === exam.courseCode)
+      );
+    });
+
+    if (examsInGroupThisWeek.some((exam) => new Date(exam.date).toDateString() === new Date(selectedDate).toDateString())) {
+      hasSameDayExam = true;
+      break;
+    }
+
+    groupExamsThisWeek = groupExamsThisWeek.concat(examsInGroupThisWeek);
+  }
+
+  if (groupExamsThisWeek.length >= 2) {
+    alert("The base group and each of the side groups combined should not have more than two exams per week.");
     return false;
-  } else if (examOnSameDate) {
-    alert("There is already an exam for this course on the selected date.");
+  } else if (hasSameDayExam) {
+    alert("The base group and each of the side groups combined should not have two exams on the same day.");
     return false;
   } else {
     const Obj = {
