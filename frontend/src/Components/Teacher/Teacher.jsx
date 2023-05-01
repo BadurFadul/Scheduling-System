@@ -18,6 +18,8 @@ const Teacher = ({user}) => {
     const [showModal, setShowModal] = useState(false);
     const [groups, setGroup] = useState([])
     const [filter, setFilter] = useState('');
+    const [warningMessage, setWarningMessage] = useState('');
+    const [warningColorClass, setWarningColorClass] = useState('');
 
     //Getting courses
   useEffect(() => {

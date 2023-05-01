@@ -123,3 +123,12 @@
   background-color: #888;
 }
 
+/*Worning teacher*/
+
+.warning-red {
+  color: red;
+}
+
+.warning-yellow {
+  color: gold;
+}

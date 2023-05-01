@@ -60,10 +60,9 @@ const Home = () => {
 
   return (
     <div className={css.wrapper}>
-      <Link to="/">back</Link>
-      <br />
+    <br/>
       <div className={css.filterWrapper}>
-        <label htmlFor="filter">Filter by group name:</label>
+        <label htmlFor="filter">Filter by group name: </label>
         <input
           type="text"
           id="filter"

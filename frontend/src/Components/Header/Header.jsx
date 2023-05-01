@@ -1,24 +1,31 @@
-import header from './Header.module.css'
-import { Link } from 'react-router-dom'
-import Home from '../Home/Home'
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import header from './Header.module.css';
 
-const Header = ({user, handlelogout}) => {
+const Header = ({ user, handlelogout }) => {
+  const location = useLocation();
+  const currentPage = location.pathname;
+
+  const isActive = (path) => {
+    return currentPage === path ? header.active : '';
+  };
+
   return (
     <div className={header.container}>
-        <div className={header.logo}>
-            Logo
-        </div>
-            <div className={header.user}>
-                   
-            </div>
-            <div className={header.login}>
-                <Link to="/teacher">Teacher</Link>
-                <button onClick={handlelogout}>Log out</button>
-                <p>{user? user.name: null} </p>
-            </div>
+      <div className={header.logo}>Badreldin</div>
+      <div className={header.user}></div>
+      <div className={header.login}>
+        <Link className={isActive('/teacher')} to="/teacher">
+          Teacher
+        </Link>
+        <Link className={isActive('/')} to="/">
+          Home
+        </Link>
+        <button onClick={handlelogout}>Log out</button>
+        <p>{user ? user.name : null} </p>
+      </div>
     </div>
-    
-  )
-}
+  );
+};
 
-export default Header
+export default Header;
