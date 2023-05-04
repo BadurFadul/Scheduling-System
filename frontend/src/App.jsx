@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { Login, Header, Home, Teacher } from "./Components"
 import LoginServices from "./services/LoginServices"
 import CourseServerice from "./services/CourseServerice"
-import ExamsService from "./services/ExamsService"
+//import ExamsService from "./services/ExamsService"
 import './App.css'
 import {
   BrowserRouter as Router,
@@ -13,19 +13,19 @@ function App() {
   const [username, setUsername] = useState('') 
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [ErrorMessage, setErrorMessage] = useState('')
+  //const [ErrorMessage, setErrorMessage] = useState('')
 
   const navigate = useNavigate()
 
   //Getting courses
-  useEffect(() => {
+ /* useEffect(() => {
     CourseServerice.getAll().then(courses => console.log(courses))
   },[])
 
   //Getting exams
   useEffect(() => {
     ExamsService.getAll().then(exam => console.log(exam))
-  },[])
+  },[])*/
 
   useEffect(() => {
     const loggedUser = window.localStorage.getItem('loggedUser')

@@ -16,10 +16,8 @@ const Teacher = ({user}) => {
     const [selectedExamId, setSelectedExamId] = useState('');
     const [formMode, setFormMode] = useState(null);
     const [showModal, setShowModal] = useState(false);
-    const [groups, setGroup] = useState([])
-    const [filter, setFilter] = useState('');
-    const [warningMessage, setWarningMessage] = useState('');
-    const [warningColorClass, setWarningColorClass] = useState('');
+    const [groupFilter, setGroupFilter] = useState("");
+
 
     //Getting courses
   useEffect(() => {
@@ -158,6 +156,7 @@ const deleteExam = async () => {
     return false;
   }
 };
+const filteredGroupNames = groupNames.filter((groupName) => groupName.toLowerCase().includes(groupFilter.toLowerCase()));
 
 
   return (
@@ -165,9 +164,18 @@ const deleteExam = async () => {
       <br />
     <h1>Courses for {user? user.name: null}</h1>
     <br/>
-    <Link to="/">back</Link>
+    <div className={css.filterContainer}>
+        <label htmlFor="groupFilter">Filter by group name: </label>
+        <input
+          type="text"
+          id="groupFilter"
+          value={groupFilter}
+          onChange={(e) => setGroupFilter(e.target.value)}
+          placeholder="  Enter group name"
+        />
+      </div>
     <br />
-    {groupNames.map((group) => (
+    {filteredGroupNames.map((group) => (
       <div key={group} className={css.tableWrapper}>
         <h2>{group}</h2>
         <table className={css.courseTable}>
