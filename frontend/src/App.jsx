@@ -25,7 +25,7 @@ function App() {
   //Getting exams
   useEffect(() => {
     ExamsService.getAll().then(exam => console.log(exam))
-  })
+  },[])
 
   useEffect(() => {
     const loggedUser = window.localStorage.getItem('loggedUser')

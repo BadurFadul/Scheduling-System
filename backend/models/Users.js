@@ -17,6 +17,20 @@ Users.init({
         type: DataTypes.STRING,
         unique:true
     },
+    email: {
+        type: DataTypes.STRING,
+        unique: true,
+        validate: {
+            isEmail: true,
+        }
+    },resetPasswordCode: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      resetPasswordExpires: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
     passwordHash: {
         type: DataTypes.STRING
     },

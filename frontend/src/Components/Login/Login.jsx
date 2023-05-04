@@ -1,12 +1,10 @@
 import Css from './Login.module.css'
+import { Link } from 'react-router-dom'
 
 const Login = ({ handleSubmit, handleUsernameChange, handlePasswordChange, username,password}) => {
 
   return (
     <div className={Css.container}>
-        <div className={Css.img}>
-            
-        </div>
         <div className={Css.content}>
             <div className={Css.Header}>
                 <p>Universiy of Applied Sciences Novia</p>
@@ -34,7 +32,10 @@ const Login = ({ handleSubmit, handleUsernameChange, handlePasswordChange, usern
                     onChange={handlePasswordChange}
                     />
                 </div>
-                </div>  
+                </div>
+                <Link to="/forgot">
+                    forgot password
+                </Link>  
                 <button className={Css.btn} type='submit'>Login</button>
             </form>
         </div>

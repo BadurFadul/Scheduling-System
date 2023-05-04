@@ -1,6 +1,9 @@
 const express = require('express')
 const router = express.Router()
 const { Groups, Courses } = require('../models')
+const {tokenExtractor} = require('../util/middleware')
+
+
 
 // Get all groups
 router.get('/', async (req, res) => {

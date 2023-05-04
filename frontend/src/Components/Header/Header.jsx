@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, Outlet } from 'react-router-dom';
 import header from './Header.module.css';
 
 const Header = ({ user, handlelogout }) => {
@@ -24,6 +24,7 @@ const Header = ({ user, handlelogout }) => {
         <button onClick={handlelogout}>Log out</button>
         <p>{user ? user.name : null} </p>
       </div>
+      <Outlet/>
     </div>
   );
 };
