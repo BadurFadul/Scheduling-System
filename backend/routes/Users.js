@@ -105,18 +105,15 @@ router.post('/login', async (req, res) => {
           error: 'invalid username'
         })
       }
-  
       if (!passwordCorrect) {
         return res.status(401).json({
           error: 'invalid password'
         })
       }
-
       const userForToken = {
         username: user.username,
         id: user.id
       }
-
       // token expires in 60*60 seconds, that is, in one hour
       const token = jwt.sign(userForToken, process.env.SECRET,{expiresIn: 60*60})
 

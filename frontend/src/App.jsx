@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react"
-import { Login, Header, Home, Teacher } from "./Components"
+import { Login, Header, Home, Teacher, ForgotPs, Rest } from "./Components"
 import LoginServices from "./services/LoginServices"
 import CourseServerice from "./services/CourseServerice"
 //import ExamsService from "./services/ExamsService"
 import './App.css'
 import {
-  BrowserRouter as Router,
-  Routes, Route, useNavigate, json
+  Routes, 
+  Route, 
+  useNavigate,
+  Outlet
 } from 'react-router-dom'
 
 function App() {
@@ -66,32 +68,33 @@ function App() {
     setUser(null)
     window.localStorage.clear()
     navigate('/login')
+ 
   }
+
+  const DefaultLayout = ({ children }) => (
+    <div className="default-layout">
+      {user && <Header user={user} handlelogout={handlelogout} />}
+      {children}
+    </div>
+  );
 
   return (
     <div>
-      {user ? <Header user={user} handlelogout={handlelogout} /> : <Login 
-        username={username}
-        password={password}
-        handleUsernameChange={({target}) => setUsername(target.value)}
-        handlePasswordChange={({target}) => setPassword(target.value)}
-        handleSubmit={handleLogin}
-        />}
-        <Routes>
-        <Route path="/login" element= {<Login 
-        username={username}
-        password={password}
-        handleUsernameChange={({target}) => setUsername(target.value)}
-        handlePasswordChange={({target}) => setPassword(target.value)}
-        handleSubmit={handleLogin}
-        />}/>
-        <Route path="/" element= {<Home />}/>
-        <Route path="/teacher" element= {<Teacher user={user}/>}/>
+      <Routes>
+        <Route path="/login" element={<Login
+          username={username}
+          password={password}
+          handleUsernameChange={({ target }) => setUsername(target.value)}
+          handlePasswordChange={({ target }) => setPassword(target.value)}
+          handleSubmit={handleLogin}
+        />} />
+        <Route path="/" element={<DefaultLayout><Home /></DefaultLayout>} />
+        <Route path="/teacher" element={<DefaultLayout><Teacher user={user} /></DefaultLayout>} />
+        <Route path="/reset" element={<Rest />} />
+        <Route path="/forgot" element={<ForgotPs />} />
       </Routes>
     </div>
-      
-      
-  )
+  );
 }
 
 export default App

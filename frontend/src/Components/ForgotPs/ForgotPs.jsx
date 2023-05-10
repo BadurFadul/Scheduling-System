@@ -13,7 +13,7 @@ const ForgotPs = () => {
         try{
             await ForgotService.create({username})
             alert("email send to the your email address")
-            navigate('/rest')
+            navigate('/reset')
         }catch(err) {
             alert(err)
         }
