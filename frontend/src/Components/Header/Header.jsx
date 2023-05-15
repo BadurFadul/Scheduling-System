@@ -12,7 +12,7 @@ const Header = ({ user, handlelogout }) => {
 
   return (
     <div className={header.container}>
-      <div className={header.logo}>Badreldin</div>
+      <div className={header.logo}>NOVIA</div>
       <div className={header.user}></div>
       <div className={header.login}>
         <Link className={isActive('/teacher')} to="/teacher">

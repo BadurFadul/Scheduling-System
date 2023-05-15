@@ -8,7 +8,8 @@ import {
   Routes, 
   Route, 
   useNavigate,
-  Outlet
+  Outlet,
+  Navigate
 } from 'react-router-dom'
 
 function App() {
@@ -71,13 +72,19 @@ function App() {
  
   }
 
-  const DefaultLayout = ({ children }) => (
-    <div className="default-layout">
-      {user && <Header user={user} handlelogout={handlelogout} />}
-      {children}
-    </div>
-  );
-
+  const DefaultLayout = ({ children }) => {
+    if (!user) {
+      return <Navigate to="/login" />
+    }
+  
+    return (
+      <div className="default-layout">
+        <Header user={user} handlelogout={handlelogout} />
+        {children}
+      </div>
+    );
+  };
+  
   return (
     <div>
       <Routes>
